@@ -39,7 +39,7 @@ que queda vinculado correctamente.
 
 ---
 
-### User Story 2 - Listar candidatos (Priority: P2)
+### User Story 2 - Listar candidatos (Priority: P1)
 
 El Gestor Candidaturas consulta todos los candidatos registrados en el sistema, con su partido y usuario asociado.
 
@@ -92,7 +92,7 @@ los cambios persisten.
 
 ---
 
-### User Story 4 - Dar de baja candidato (Priority: P4)
+### User Story 4 - Dar de baja candidato (Priority: P2)
 
 El Gestor Candidaturas da de baja un candidato de forma administrativa, registrando un motivo sólido. El candidato pasa
 a estado `suspendido` y queda permanentemente inhabilitado para participar en futuras elecciones, pero su registro
@@ -129,7 +129,7 @@ inactivo, que el motivo queda registrado, y que ya no puede ser asignado a ningu
 
 ---
 
-### User Story 5 - Cancelar candidatura (Priority: P4)
+### User Story 5 - Cancelar candidatura (Priority: P2)
 
 Un candidato solicita al Gestor Candidaturas la cancelación voluntaria de su candidatura, por ejemplo para apoyar a otro
 candidato. El candidato pasa a estado `inactivo`. Esta operación no registra motivo ni inhabilita al candidato para

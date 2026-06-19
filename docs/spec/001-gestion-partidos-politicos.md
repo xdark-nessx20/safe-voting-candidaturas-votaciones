@@ -34,7 +34,7 @@ registrado y disponible para ser consultado.
 
 ---
 
-### User Story 2 - Listar partidos (Priority: P2)
+### User Story 2 - Listar partidos (Priority: P1)
 
 El Gestor Candidaturas consulta todos los partidos políticos registrados en el sistema.
 
@@ -57,7 +57,7 @@ candidatos.
 
 ---
 
-### User Story 3 - Editar partido político (Priority: P3)
+### User Story 3 - Editar partido político (Priority: P2)
 
 El Gestor Candidaturas modifica los datos de un partido existente para corregir o actualizar su información.
 
@@ -86,7 +86,7 @@ cambios se reflejan al listarlo.
 
 ---
 
-### User Story 4 - Inhabilitar partido político (Priority: P4)
+### User Story 4 - Inhabilitar partido político (Priority: P2)
 
 El Gestor Candidaturas da de baja un partido para que no pueda participar en nuevas votaciones, sin eliminar su registro
 histórico.

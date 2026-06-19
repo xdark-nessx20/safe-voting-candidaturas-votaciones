@@ -71,7 +71,7 @@ que ya no aparece en el tarjetón pero se conserva en el historial.
 
 ---
 
-### User Story 3 - Ver tarjetón digital (Priority: P2)
+### User Story 3 - Ver tarjetón digital (Priority: P1)
 
 Un usuario autenticado consulta el tarjetón digital de una votación para ver los candidatos y partidos por los cuales
 puede votar.

@@ -8,7 +8,7 @@ partido y a un usuario ya registrado. También gestiona la foto del candidato y 
 electoral que no pertenecen al perfil de usuario base. Es el responsable de que el tarjetón digital refleje
 correctamente los partidos y candidatos que compiten en cada jornada.
 
-## Gestor Votaciones
+## Gestor Electoral
 
 Representa al administrador electoral que configura y controla el ciclo de vida de una jornada de votación. Crea
 votaciones definiendo su nombre, tipo (`PRESIDENCIA`, `CONGRESO`, `ALCALDIA`, `GOBERNACION`) y alcance geográfico (

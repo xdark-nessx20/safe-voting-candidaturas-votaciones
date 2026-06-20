@@ -165,7 +165,7 @@ verificando que el cambio se aplica pero el candidato sigue habilitado para otra
 
 - ¿Qué sucede si se da de baja un candidato que está asignado a una votación EN_PROGRESO?
     - No se permite esta operación. La baja administrativa solo puede realizarse mientras la votación esté en estado
-      ACTIVA y dentro del rango de fechas establecido por el Gestor Votaciones. El motivo de la baja queda registrado
+      ACTIVA y dentro del rango de fechas establecido por el Gestor Electoral. El motivo de la baja queda registrado
       obligatoriamente y será tenido en cuenta para futuros procesos electorales.
 - ¿Qué sucede si la URL de la foto no es accesible o no es una URL válida?
     - La subida y validación de imágenes se delega a un servicio externo (ej. Cloudinary). El sistema solo persiste la

@@ -39,11 +39,10 @@ public class PartidoRepositoryAdapter implements PartidoPoliticoRepository {
 
     @Override
     public Mono<Boolean> existsByNombre(String nombre) {
-        return databaseClient.sql("SELECT COUNT(*) FROM partido WHERE UPPER(nombre) = UPPER(:nombre)")
+        return databaseClient.sql("SELECT EXISTS(SELECT 1 FROM partido WHERE UPPER(nombre) = UPPER(:nombre))")
                 .bind("nombre", nombre)
-                .mapValue(Integer.class)
+                .mapValue(Boolean.class)
                 .one()
-                .map(count -> count > 0)
                 .defaultIfEmpty(false);
     }
 

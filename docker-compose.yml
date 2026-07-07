@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: safevoting_elecciones_postgres
+    environment:
+      POSTGRES_DB: safevoting_elecciones
+      POSTGRES_USER: safevoting
+      POSTGRES_PASSWORD: safevoting_dev
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata_elecciones:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U safevoting -d safevoting_elecciones"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: safevoting_elecciones
+    ports:
+      - "8081:8081"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: safevoting_elecciones
+      DB_USER: safevoting
+      DB_PASS: safevoting_dev
+      JWT_SECRET: super-secret-key-that-is-long-enough-for-hs256-algorithm-minimum-32-characters
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+      SPRING_R2DBC_URL: r2dbc:postgresql://postgres:5432/safevoting_elecciones
+      SPRING_R2DBC_USERNAME: safevoting
+      SPRING_R2DBC_PASSWORD: safevoting_dev
+      SPRING_FLYWAY_URL: jdbc:postgresql://postgres:5432/safevoting_elecciones
+      SPRING_FLYWAY_USER: safevoting
+      SPRING_FLYWAY_PASSWORD: safevoting_dev
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8081/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata_elecciones:

@@ -1,0 +1,20 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:${postgres.port:5432}/test
+    username: test
+    password: test
+  flyway:
+    enabled: false
+  sql:
+    init:
+      mode: never
+
+jwt:
+  secret: test-secret-key-that-is-long-enough-for-hs256-algorithm-minimum-32-characters
+  expiration: 86400000
+
+cloudinary:
+  cloud-name: test-cloud
+  api-key: test-api-key
+  api-secret: test-api-secret
+  timeout-seconds: 10

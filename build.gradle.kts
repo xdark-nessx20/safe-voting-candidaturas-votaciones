@@ -4,6 +4,12 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
 }
 
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2024.0.1")
+    }
+}
+
 group = "com.safevoting"
 version = "0.1.0"
 
@@ -37,6 +43,8 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
 
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
+    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j")
     implementation("com.cloudinary:cloudinary-http5:2.4.0")
 
     runtimeOnly("org.postgresql:r2dbc-postgresql:1.0.5.RELEASE")

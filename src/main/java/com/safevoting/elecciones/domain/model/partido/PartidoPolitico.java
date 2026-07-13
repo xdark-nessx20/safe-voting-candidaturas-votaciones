@@ -55,6 +55,14 @@ public class PartidoPolitico {
         validateNombre();
     }
 
+    public boolean isHabilitado() {
+        return EstadoPartido.HABILITADO.equals(this.estado);
+    }
+
+    public boolean isInhabilitado() {
+        return EstadoPartido.INHABILITADO.equals(this.estado);
+    }
+
     public void changeLogo(String newLogoUrl) {
         if (newLogoUrl != null && !newLogoUrl.startsWith("https://")) {
             throw new UrlInvalidaException("La url del logo es invalida.");
@@ -63,7 +71,7 @@ public class PartidoPolitico {
     }
 
     public void inhabilitar() {
-        if (estado.esInhabilitado()) {
+        if (isInhabilitado()) {
             throw new PartidoYaInhabilitadoException(id);
         }
         this.estado = EstadoPartido.INHABILITADO;

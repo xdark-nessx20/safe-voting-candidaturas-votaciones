@@ -30,29 +30,45 @@ El sistema debe gestionar las transiciones de estado para garantizar la integrid
 
 ---
 
-## 🗳️ Módulo 2: Partidos, Candidatos y Votaciones
+## 🗳️ Módulo 2: Partidos, Miembros, Candidaturas y Votaciones
 
-Este módulo administra los actores del proceso electoral (partidos y candidatos) y la configuración de cada jornada de votación. Define las reglas bajo las cuales se emiten y contabilizan los votos.
+Este módulo administra los actores del proceso electoral (partidos, miembros de partido y candidaturas) y la configuración de cada jornada de votación. Define las reglas bajo las cuales se emiten y contabilizan los votos. Se comunica con el Módulo 1 vía RabbitMQ para sincronizar el estado y datos de los usuarios.
 
 ### 2.1. Partidos Políticos
 
-Un partido político es la entidad organizadora que agrupa a los candidatos. Sus atributos son:
+Un partido político es la entidad organizadora que agrupa a sus miembros y candidatos. Sus atributos son:
 
 * **Nombre:** Denominación oficial del partido.
 * **Descripción:** Texto opcional con la presentación o ideario del partido.
 * **Logo (URL):** Enlace a la imagen representativa del partido. Al no almacenar binarios en base de datos, este campo persiste como un `String` con la URL pública de la imagen.
 
-### 2.2. Candidatos
+### 2.2. Miembros del Partido
 
-El candidato es una entidad propia dentro del sistema, ya que aunque su información base provenga de un usuario registrado, requiere atributos adicionales propios del contexto electoral:
+Un miembro de partido es la entidad que vincula un usuario del Módulo 1 con un partido político. Al registrarse, se toma un **snapshot inmutable** de los datos de identidad del usuario (nombre completo, documento, lugar de inscripción) para mantener independencia operativa entre módulos.
 
-* **Relación con Usuario:** Referencia al registro del ciudadano en el Módulo 1.
-* **Relación con Partido:** Vínculo al partido político que lo postula.
-* **Foto (URL):** Enlace a la imagen del candidato que se mostrará en el tarjetón digital. Al igual que el logo del partido, se persiste como un `String` con la URL pública.
+* **Relación con Usuario:** Referencia al registro del ciudadano en el Módulo 1 (`usuarioId` como FK lógica).
+* **Relación con Partido:** Vínculo al partido político al que pertenece.
+* **Snapshot de identidad:** Copia de `nombreCompleto`, `documentoIdentidad` y `lugarInscripcion` tomada del Módulo 1 al momento del registro.
+* **Foto (URL):** Enlace a la imagen del miembro (foto electoral). Independiente de la foto de perfil del usuario en el Módulo 1.
+* **Estado:** `ACTIVO` o `INACTIVO`. Un miembro inactivo no puede ser postulado como candidato.
 
-> 📌 La separación entre **Usuario** y **Candidato** permite que un ciudadano registrado en el sistema pueda ser postulado en múltiples procesos electorales sin duplicar su información de identidad.
+> 📌 La separación entre **Usuario** (Módulo 1) y **MiembroPartido** (Módulo 2) permite que los datos del tarjetón electoral sean independientes y que un ciudadano pueda pertenecer a múltiples partidos sin duplicar su información de identidad.
+>
+> 🔄 **Sincronización con Módulo 1:** Cuando un usuario cambia de estado o actualiza sus datos en el Módulo 1, se emiten **eventos asíncronos vía RabbitMQ** (`usuario.habilitado`, `usuario.inhabilitado`, `usuario.actualizado`) que el Módulo 2 consume para mantener actualizados el estado y los snapshots de los miembros. Ver [Guía de implementación del Módulo 1](docs/plan/modulo1-eventos-implementacion.md).
 
-### 2.3. Votaciones
+### 2.3. Candidaturas
+
+Una candidatura define qué **MiembroPartido** es postulado como candidato para una **Votacion** específica. No todo miembro de un partido es candidato; la candidatura es la entidad que formaliza la postulación.
+
+* **Relación con MiembroPartido:** Referencia al miembro del partido que se postula.
+* **Relación con Votacion:** Vínculo a la jornada electoral en la que participa.
+* **Relación con Partido:** Redundancia controlada del partido al que pertenece el miembro (facilita consultas sin JOIN adicional).
+* **Fecha de inscripción:** Momento en que se formalizó la candidatura.
+* **Estado:** `ACTIVA` o `CANCELADA`.
+
+> 📌 Un mismo `MiembroPartido` puede ser candidato en múltiples votaciones a lo largo del tiempo. La candidatura es la entidad que registra cada postulación individual.
+
+### 2.4. Votaciones
 
 Una votación representa una jornada electoral configurable. Sus atributos son:
 
@@ -82,7 +98,7 @@ Una votación representa una jornada electoral configurable. Sus atributos son:
     * **FINALIZADA:** La jornada cerró exitosamente y los resultados están disponibles.
     * **CANCELADA:** La votación fue suspendida antes de completarse.
 
-### 2.4. Votos
+### 2.5. Votos
 
 Cada emisión de voto queda registrada de forma individual y auditada:
 

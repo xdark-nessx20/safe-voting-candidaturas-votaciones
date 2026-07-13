@@ -12,4 +12,6 @@ public interface CandidaturaRepository {
     Flux<Candidatura> findActivasByPartidoId(UUID partidoId);
 
     Mono<Votacion> findVotacionByCandidaturaId(UUID candidaturaId);
+
+    Flux<Candidatura> findActivasByMiembroId(UUID miembroId);
 }

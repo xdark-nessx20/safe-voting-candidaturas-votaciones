@@ -6,17 +6,19 @@ import com.safevoting.elecciones.domain.model.partido.EstadoPartido;
 import com.safevoting.elecciones.domain.model.partido.PartidoPolitico;
 import com.safevoting.elecciones.domain.repository.ImageStorageService;
 import com.safevoting.elecciones.domain.repository.PartidoPoliticoRepository;
-import com.safevoting.elecciones.infrastructure.adapter.in.rest.partido.dto.PartidoRequest;
+import com.safevoting.elecciones.infrastructure.adapter.in.rest.partido.mapper.PartidoDtoMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,7 +37,10 @@ class CrearPartidoUseCaseTest {
 
     @Test
     void crearPartidoExitoso() {
-        PartidoRequest request = new PartidoRequest("PARTIDO A", "Descripcion", null);
+        PartidoPolitico partido = PartidoPolitico.builder()
+                .nombre("PARTIDO A")
+                .descripcion("Descripcion")
+                .build();
         PartidoPolitico partidoGuardado = PartidoPolitico.builder()
                 .nombre("PARTIDO A")
                 .descripcion("Descripcion")
@@ -45,9 +50,9 @@ class CrearPartidoUseCaseTest {
         when(repository.existsByNombre("PARTIDO A")).thenReturn(Mono.just(false));
         when(repository.save(any(PartidoPolitico.class))).thenReturn(Mono.just(partidoGuardado));
 
-        StepVerifier.create(useCase.ejecutar(request))
+        StepVerifier.create(useCase.ejecutar(partido, null))
                 .expectNextMatches(p -> "PARTIDO A".equals(p.getNombre())
-                        && p.getEstado() == EstadoPartido.HABILITADO)
+                        && p.isHabilitado())
                 .verifyComplete();
 
         verify(repository).save(any(PartidoPolitico.class));
@@ -55,11 +60,14 @@ class CrearPartidoUseCaseTest {
 
     @Test
     void nombreDuplicadoShouldThrowNombreDuplicadoException() {
-        PartidoRequest request = new PartidoRequest("PARTIDO A", "Descripcion", null);
+        PartidoPolitico partido = PartidoPolitico.builder()
+                .nombre("PARTIDO A")
+                .descripcion("Descripcion")
+                .build();
 
         when(repository.existsByNombre("PARTIDO A")).thenReturn(Mono.just(true));
 
-        StepVerifier.create(useCase.ejecutar(request))
+        StepVerifier.create(useCase.ejecutar(partido, null))
                 .expectError(NombreDuplicadoException.class)
                 .verify();
 
@@ -68,7 +76,10 @@ class CrearPartidoUseCaseTest {
 
     @Test
     void logoUploadFallaShouldCrearPartidoSinLogo() {
-        PartidoRequest request = new PartidoRequest("PARTIDO B", "Desc", "base64fake");
+        PartidoPolitico partido = PartidoPolitico.builder()
+                .nombre("PARTIDO B")
+                .descripcion("Desc")
+                .build();
         PartidoPolitico partidoGuardado = PartidoPolitico.builder()
                 .nombre("PARTIDO B")
                 .descripcion("Desc")
@@ -79,7 +90,7 @@ class CrearPartidoUseCaseTest {
         when(imageStorageService.upload(any(byte[].class))).thenReturn(Mono.empty());
         when(repository.save(any(PartidoPolitico.class))).thenReturn(Mono.just(partidoGuardado));
 
-        StepVerifier.create(useCase.ejecutar(request))
+        StepVerifier.create(useCase.ejecutar(partido, "base64fake"))
                 .expectNextMatches(p -> "PARTIDO B".equals(p.getNombre()))
                 .verifyComplete();
 

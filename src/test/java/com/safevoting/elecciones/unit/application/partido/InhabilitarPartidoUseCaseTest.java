@@ -50,7 +50,7 @@ class InhabilitarPartidoUseCaseTest {
         when(partidoRepository.update(any(PartidoPolitico.class))).thenReturn(Mono.just(partido));
 
         StepVerifier.create(useCase.ejecutar(partidoId))
-                .expectNextMatches(p -> p.getEstado() == EstadoPartido.INHABILITADO)
+                .expectNextMatches(PartidoPolitico::isInhabilitado)
                 .verifyComplete();
     }
 

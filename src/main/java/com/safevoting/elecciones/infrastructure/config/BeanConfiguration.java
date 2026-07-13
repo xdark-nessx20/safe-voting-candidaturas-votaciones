@@ -1,5 +1,9 @@
 package com.safevoting.elecciones.infrastructure.config;
 
+import com.safevoting.elecciones.application.candidatura.CancelarCandidaturaUseCase;
+import com.safevoting.elecciones.application.candidatura.CancelarCandidaturasPorPartidoUseCase;
+import com.safevoting.elecciones.application.candidatura.InscribirCandidaturaUseCase;
+import com.safevoting.elecciones.application.candidatura.ListarCandidaturasPorVotacionUseCase;
 import com.safevoting.elecciones.application.miembro.ActualizarSnapshotUseCase;
 import com.safevoting.elecciones.application.miembro.CrearMiembroUseCase;
 import com.safevoting.elecciones.application.miembro.DarBajaMiembroUseCase;
@@ -25,7 +29,9 @@ import com.safevoting.elecciones.domain.repository.CandidaturaRepository;
 import com.safevoting.elecciones.domain.repository.EventLogRepository;
 import com.safevoting.elecciones.domain.repository.ImageStorageService;
 import com.safevoting.elecciones.domain.repository.MiembroPartidoRepository;
+import com.safevoting.elecciones.domain.repository.MiembroPartidoRepository;
 import com.safevoting.elecciones.domain.repository.PartidoPoliticoRepository;
+import com.safevoting.elecciones.domain.repository.VotacionRepository;
 import com.safevoting.elecciones.domain.repository.VotacionRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,8 +50,10 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public InhabilitarPartidoUseCase inhabilitarPartidoUseCase(PartidoPoliticoRepository partidoRepository, CandidaturaRepository candidaturaRepository) {
-        return new InhabilitarPartidoUseCase(partidoRepository, candidaturaRepository);
+    public InhabilitarPartidoUseCase inhabilitarPartidoUseCase(PartidoPoliticoRepository partidoRepository,
+                                                                CandidaturaRepository candidaturaRepository,
+                                                                CancelarCandidaturasPorPartidoUseCase cancelarCandidaturasPorPartidoUseCase) {
+        return new InhabilitarPartidoUseCase(partidoRepository, candidaturaRepository, cancelarCandidaturasPorPartidoUseCase);
     }
 
     @Bean
@@ -143,5 +151,29 @@ public class BeanConfiguration {
     @Bean
     public ListarVotacionesUseCase listarVotacionesUseCase(VotacionRepository repository) {
         return new ListarVotacionesUseCase(repository);
+    }
+
+    @Bean
+    public InscribirCandidaturaUseCase inscribirCandidaturaUseCase(CandidaturaRepository candidaturaRepository,
+                                                                      VotacionRepository votacionRepository,
+                                                                      MiembroPartidoRepository miembroPartidoRepository,
+                                                                      PartidoPoliticoRepository partidoRepository) {
+        return new InscribirCandidaturaUseCase(candidaturaRepository, votacionRepository, miembroPartidoRepository, partidoRepository);
+    }
+
+    @Bean
+    public CancelarCandidaturaUseCase cancelarCandidaturaUseCase(CandidaturaRepository candidaturaRepository,
+                                                                   VotacionRepository votacionRepository) {
+        return new CancelarCandidaturaUseCase(candidaturaRepository, votacionRepository);
+    }
+
+    @Bean
+    public ListarCandidaturasPorVotacionUseCase listarCandidaturasPorVotacionUseCase(CandidaturaRepository candidaturaRepository) {
+        return new ListarCandidaturasPorVotacionUseCase(candidaturaRepository);
+    }
+
+    @Bean
+    public CancelarCandidaturasPorPartidoUseCase cancelarCandidaturasPorPartidoUseCase(CandidaturaRepository candidaturaRepository) {
+        return new CancelarCandidaturasPorPartidoUseCase(candidaturaRepository);
     }
 }

@@ -72,7 +72,7 @@ class ActualizarSnapshotUseCaseTest {
 
         UUID candidaturaId = UUID.randomUUID();
         Candidatura candidatura = Candidatura.builder()
-                .id(candidaturaId).candidatoId(miembroId).partidoId(UUID.randomUUID()).votacionId(UUID.randomUUID()).build();
+                .id(candidaturaId).miembroPartidoId(miembroId).partidoId(UUID.randomUUID()).votacionId(UUID.randomUUID()).build();
         Votacion votacion = Votacion.builder()
                 .id(UUID.randomUUID()).nombre("Votacion 2026").estado(EstadoVotacion.EN_PROGRESO).build();
 

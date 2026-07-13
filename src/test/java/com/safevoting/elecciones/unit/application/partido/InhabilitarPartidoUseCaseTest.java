@@ -1,5 +1,6 @@
 package com.safevoting.elecciones.unit.application.partido;
 
+import com.safevoting.elecciones.application.candidatura.CancelarCandidaturasPorPartidoUseCase;
 import com.safevoting.elecciones.application.partido.InhabilitarPartidoUseCase;
 import com.safevoting.elecciones.domain.exception.partido.PartidoConCandidatosEnVotacionException;
 import com.safevoting.elecciones.domain.exception.partido.PartidoNoEncontradoException;
@@ -36,6 +37,9 @@ class InhabilitarPartidoUseCaseTest {
     @Mock
     private CandidaturaRepository candidaturaRepository;
 
+    @Mock
+    private CancelarCandidaturasPorPartidoUseCase cancelarCandidaturasPorPartidoUseCase;
+
     @InjectMocks
     private InhabilitarPartidoUseCase useCase;
 
@@ -48,6 +52,7 @@ class InhabilitarPartidoUseCaseTest {
         when(partidoRepository.findById(partidoId)).thenReturn(Mono.just(partido));
         when(candidaturaRepository.findActivasByPartidoId(partidoId)).thenReturn(Flux.empty());
         when(partidoRepository.update(any(PartidoPolitico.class))).thenReturn(Mono.just(partido));
+        when(cancelarCandidaturasPorPartidoUseCase.ejecutar(partidoId)).thenReturn(Mono.just(0L));
 
         StepVerifier.create(useCase.ejecutar(partidoId))
                 .expectNextMatches(PartidoPolitico::isInhabilitado)

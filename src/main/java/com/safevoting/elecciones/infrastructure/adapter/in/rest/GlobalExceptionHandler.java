@@ -1,5 +1,11 @@
 package com.safevoting.elecciones.infrastructure.adapter.in.rest;
 
+import com.safevoting.elecciones.domain.exception.candidatura.CandidaturaNoEncontradaException;
+import com.safevoting.elecciones.domain.exception.candidatura.CandidaturaYaCanceladaException;
+import com.safevoting.elecciones.domain.exception.candidatura.MiembroNoActivoException;
+import com.safevoting.elecciones.domain.exception.candidatura.PartidoInhabilitadoException;
+import com.safevoting.elecciones.domain.exception.candidatura.PartidoNoCoincideException;
+import com.safevoting.elecciones.domain.exception.candidatura.VotacionNoActivaException;
 import com.safevoting.elecciones.domain.exception.DatosInvalidosException;
 import com.safevoting.elecciones.domain.exception.miembro.MiembroDuplicadoException;
 import com.safevoting.elecciones.domain.exception.miembro.MiembroInscritoEnVotacionException;
@@ -131,6 +137,42 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AlcanceExcedidoException.class)
     public ResponseEntity<ApiErrorResponse> handleAlcanceExcedido(AlcanceExcedidoException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(CandidaturaNoEncontradaException.class)
+    public ResponseEntity<ApiErrorResponse> handleCandidaturaNoEncontrada(CandidaturaNoEncontradaException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(CandidaturaYaCanceladaException.class)
+    public ResponseEntity<ApiErrorResponse> handleCandidaturaYaCancelada(CandidaturaYaCanceladaException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(VotacionNoActivaException.class)
+    public ResponseEntity<ApiErrorResponse> handleVotacionNoActiva(VotacionNoActivaException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(MiembroNoActivoException.class)
+    public ResponseEntity<ApiErrorResponse> handleMiembroNoActivo(MiembroNoActivoException ex) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(PartidoInhabilitadoException.class)
+    public ResponseEntity<ApiErrorResponse> handlePartidoInhabilitado(PartidoInhabilitadoException ex) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(PartidoNoCoincideException.class)
+    public ResponseEntity<ApiErrorResponse> handlePartidoNoCoincide(PartidoNoCoincideException ex) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
     }
 

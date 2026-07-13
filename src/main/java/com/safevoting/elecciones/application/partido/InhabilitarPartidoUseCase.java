@@ -1,5 +1,6 @@
 package com.safevoting.elecciones.application.partido;
 
+import com.safevoting.elecciones.application.candidatura.CancelarCandidaturasPorPartidoUseCase;
 import com.safevoting.elecciones.domain.exception.partido.PartidoConCandidatosEnVotacionException;
 import com.safevoting.elecciones.domain.exception.partido.PartidoNoEncontradoException;
 import com.safevoting.elecciones.domain.model.partido.PartidoPolitico;
@@ -16,6 +17,7 @@ public class InhabilitarPartidoUseCase {
 
     private final PartidoPoliticoRepository partidoRepository;
     private final CandidaturaRepository candidaturaRepository;
+    private final CancelarCandidaturasPorPartidoUseCase cancelarCandidaturasPorPartidoUseCase;
 
     public Mono<PartidoPolitico> ejecutar(UUID partidoId) {
         return partidoRepository.findById(partidoId)
@@ -24,7 +26,9 @@ public class InhabilitarPartidoUseCase {
                 .flatMap(partido -> {
                     partido.inhabilitar();
                     return partidoRepository.update(partido);
-                });
+                })
+                .flatMap(partido -> cancelarCandidaturasPorPartidoUseCase.ejecutar(partidoId)
+                        .thenReturn(partido));
     }
 
     private Mono<PartidoPolitico> validarCandidatosEnVotacion(PartidoPolitico partido) {

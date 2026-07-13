@@ -5,5 +5,5 @@ public enum EstadoVotacion {
     EN_PROGRESO,
     FINALIZADA,
     COMPLETADA,
-    CANCELADA
+    CANCELADA;
 }

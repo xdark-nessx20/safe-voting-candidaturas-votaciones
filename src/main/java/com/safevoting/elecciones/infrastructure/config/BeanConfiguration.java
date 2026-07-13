@@ -13,11 +13,20 @@ import com.safevoting.elecciones.application.partido.EditarPartidoUseCase;
 import com.safevoting.elecciones.application.partido.InhabilitarPartidoUseCase;
 import com.safevoting.elecciones.application.partido.ListarPartidosUseCase;
 import com.safevoting.elecciones.application.partido.ObtenerPartidoUseCase;
+import com.safevoting.elecciones.application.votacion.AbrirVotacionUseCase;
+import com.safevoting.elecciones.application.votacion.CancelarVotacionUseCase;
+import com.safevoting.elecciones.application.votacion.CerrarVotacionUseCase;
+import com.safevoting.elecciones.application.votacion.CompletarVotacionUseCase;
+import com.safevoting.elecciones.application.votacion.CrearVotacionUseCase;
+import com.safevoting.elecciones.application.votacion.EstablecerFechasUseCase;
+import com.safevoting.elecciones.application.votacion.ListarVotacionesUseCase;
+import com.safevoting.elecciones.application.votacion.ObtenerVotacionUseCase;
 import com.safevoting.elecciones.domain.repository.CandidaturaRepository;
 import com.safevoting.elecciones.domain.repository.EventLogRepository;
 import com.safevoting.elecciones.domain.repository.ImageStorageService;
 import com.safevoting.elecciones.domain.repository.MiembroPartidoRepository;
 import com.safevoting.elecciones.domain.repository.PartidoPoliticoRepository;
+import com.safevoting.elecciones.domain.repository.VotacionRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -94,5 +103,45 @@ public class BeanConfiguration {
                                                                  CandidaturaRepository candidaturaRepository,
                                                                  EventLogRepository eventLogRepository) {
         return new ActualizarSnapshotUseCase(miembroRepository, candidaturaRepository, eventLogRepository);
+    }
+
+    @Bean
+    public CrearVotacionUseCase crearVotacionUseCase(VotacionRepository repository) {
+        return new CrearVotacionUseCase(repository);
+    }
+
+    @Bean
+    public EstablecerFechasUseCase establecerFechasUseCase(VotacionRepository repository) {
+        return new EstablecerFechasUseCase(repository);
+    }
+
+    @Bean
+    public AbrirVotacionUseCase abrirVotacionUseCase(VotacionRepository repository, CandidaturaRepository candidaturaRepository) {
+        return new AbrirVotacionUseCase(repository, candidaturaRepository);
+    }
+
+    @Bean
+    public CerrarVotacionUseCase cerrarVotacionUseCase(VotacionRepository repository) {
+        return new CerrarVotacionUseCase(repository);
+    }
+
+    @Bean
+    public CancelarVotacionUseCase cancelarVotacionUseCase(VotacionRepository repository) {
+        return new CancelarVotacionUseCase(repository);
+    }
+
+    @Bean
+    public CompletarVotacionUseCase completarVotacionUseCase(VotacionRepository repository) {
+        return new CompletarVotacionUseCase(repository);
+    }
+
+    @Bean
+    public ObtenerVotacionUseCase obtenerVotacionUseCase(VotacionRepository repository) {
+        return new ObtenerVotacionUseCase(repository);
+    }
+
+    @Bean
+    public ListarVotacionesUseCase listarVotacionesUseCase(VotacionRepository repository) {
+        return new ListarVotacionesUseCase(repository);
     }
 }

@@ -14,7 +14,7 @@ public class EventLogRepositoryAdapter implements EventLogRepository {
 
     @Override
     public Mono<Boolean> existsByEventId(String eventId) {
-        return databaseClient.sql("SELECT EXISTS(SELECT 1 FROM event_log WHERE event_id = :eventId)")
+        return databaseClient.sql("SELECT EXISTS(SELECT 1 FROM event_logs WHERE event_id = :eventId)")
                 .bind("eventId", eventId)
                 .mapValue(Boolean.class)
                 .one()
@@ -23,7 +23,7 @@ public class EventLogRepositoryAdapter implements EventLogRepository {
 
     @Override
     public Mono<Void> saveEventId(String eventId) {
-        return databaseClient.sql("INSERT INTO event_log (event_id) VALUES (:eventId) ON CONFLICT DO NOTHING")
+        return databaseClient.sql("INSERT INTO event_logs (event_id) VALUES (:eventId) ON CONFLICT DO NOTHING")
                 .bind("eventId", eventId)
                 .then();
     }

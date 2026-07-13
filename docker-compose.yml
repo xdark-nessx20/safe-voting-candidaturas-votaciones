@@ -16,6 +16,18 @@ services:
       timeout: 5s
       retries: 5
 
+  rabbitmq:
+    image: rabbitmq:4.0-management-alpine
+    container_name: safevoting_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   app:
     build: .
     container_name: safevoting_elecciones
@@ -37,6 +49,9 @@ services:
       SPRING_FLYWAY_URL: jdbc:postgresql://postgres:5432/safevoting_elecciones
       SPRING_FLYWAY_USER: safevoting
       SPRING_FLYWAY_PASSWORD: safevoting_dev
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: guest
+      RABBITMQ_PASS: guest
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:8081/actuator/health || exit 1"]
       interval: 10s
@@ -45,6 +60,8 @@ services:
       start_period: 30s
     depends_on:
       postgres:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
 
 volumes:

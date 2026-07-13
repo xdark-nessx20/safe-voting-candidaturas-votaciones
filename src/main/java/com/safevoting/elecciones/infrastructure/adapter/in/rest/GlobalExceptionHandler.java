@@ -1,6 +1,11 @@
 package com.safevoting.elecciones.infrastructure.adapter.in.rest;
 
 import com.safevoting.elecciones.domain.exception.DatosInvalidosException;
+import com.safevoting.elecciones.domain.exception.miembro.MiembroDuplicadoException;
+import com.safevoting.elecciones.domain.exception.miembro.MiembroInscritoEnVotacionException;
+import com.safevoting.elecciones.domain.exception.miembro.MiembroNoEncontradoException;
+import com.safevoting.elecciones.domain.exception.miembro.MiembroYaInactivoException;
+import com.safevoting.elecciones.domain.exception.miembro.UsuarioNoEncontradoException;
 import com.safevoting.elecciones.domain.exception.partido.NombreDuplicadoException;
 import com.safevoting.elecciones.domain.exception.partido.PartidoConCandidatosEnVotacionException;
 import com.safevoting.elecciones.domain.exception.partido.PartidoNoEncontradoException;
@@ -41,6 +46,36 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DatosInvalidosException.class)
     public ResponseEntity<ApiErrorResponse> handleDatosInvalidos(DatosInvalidosException ex) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(MiembroNoEncontradoException.class)
+    public ResponseEntity<ApiErrorResponse> handleMiembroNoEncontrado(MiembroNoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(MiembroDuplicadoException.class)
+    public ResponseEntity<ApiErrorResponse> handleMiembroDuplicado(MiembroDuplicadoException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(MiembroYaInactivoException.class)
+    public ResponseEntity<ApiErrorResponse> handleMiembroYaInactivo(MiembroYaInactivoException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(UsuarioNoEncontradoException.class)
+    public ResponseEntity<ApiErrorResponse> handleUsuarioNoEncontrado(UsuarioNoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(MiembroInscritoEnVotacionException.class)
+    public ResponseEntity<ApiErrorResponse> handleMiembroInscritoEnVotacion(MiembroInscritoEnVotacionException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
     }
 

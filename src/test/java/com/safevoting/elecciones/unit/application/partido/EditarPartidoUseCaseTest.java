@@ -7,7 +7,6 @@ import com.safevoting.elecciones.domain.model.partido.EstadoPartido;
 import com.safevoting.elecciones.domain.model.partido.PartidoPolitico;
 import com.safevoting.elecciones.domain.repository.ImageStorageService;
 import com.safevoting.elecciones.domain.repository.PartidoPoliticoRepository;
-import com.safevoting.elecciones.infrastructure.adapter.in.rest.partido.dto.PartidoRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,12 +40,13 @@ class EditarPartidoUseCaseTest {
         PartidoPolitico existente = PartidoPolitico.builder()
                 .id(id).nombre("PARTIDO A").descripcion("Vieja desc").logoUrl("https://old-logo.png")
                 .estado(EstadoPartido.HABILITADO).build();
-        PartidoRequest request = new PartidoRequest("PARTIDO A", "Nueva desc", null);
+        PartidoPolitico newPartido = PartidoPolitico.builder()
+                .nombre("PARTIDO A").descripcion("Nueva desc").build();
 
         when(repository.findById(id)).thenReturn(Mono.just(existente));
         when(repository.update(any(PartidoPolitico.class))).thenReturn(Mono.just(existente));
 
-        StepVerifier.create(useCase.ejecutar(id, request))
+        StepVerifier.create(useCase.ejecutar(id, newPartido, null))
                 .expectNextMatches(p -> "Nueva desc".equals(p.getDescripcion()))
                 .verifyComplete();
     }
@@ -56,12 +56,13 @@ class EditarPartidoUseCaseTest {
         UUID id = UUID.randomUUID();
         PartidoPolitico existente = PartidoPolitico.builder()
                 .id(id).nombre("PARTIDO A").estado(EstadoPartido.HABILITADO).build();
-        PartidoRequest request = new PartidoRequest("PARTIDO B", "Desc", null);
+        PartidoPolitico newPartido = PartidoPolitico.builder()
+                .nombre("PARTIDO B").descripcion("Desc").build();
 
         when(repository.findById(id)).thenReturn(Mono.just(existente));
         when(repository.existsByNombre("PARTIDO B")).thenReturn(Mono.just(true));
 
-        StepVerifier.create(useCase.ejecutar(id, request))
+        StepVerifier.create(useCase.ejecutar(id, newPartido, null))
                 .expectError(NombreDuplicadoException.class)
                 .verify();
 
@@ -71,11 +72,12 @@ class EditarPartidoUseCaseTest {
     @Test
     void partidoNoEncontradoShouldThrowPartidoNoEncontradoException() {
         UUID id = UUID.randomUUID();
-        PartidoRequest request = new PartidoRequest("PARTIDO X", "Desc", null);
+        PartidoPolitico newPartido = PartidoPolitico.builder()
+                .nombre("PARTIDO X").descripcion("Desc").build();
 
         when(repository.findById(id)).thenReturn(Mono.empty());
 
-        StepVerifier.create(useCase.ejecutar(id, request))
+        StepVerifier.create(useCase.ejecutar(id, newPartido, null))
                 .expectError(PartidoNoEncontradoException.class)
                 .verify();
     }

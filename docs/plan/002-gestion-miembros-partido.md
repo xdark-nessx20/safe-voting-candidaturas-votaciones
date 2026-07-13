@@ -110,7 +110,7 @@ src/main/java/com/safevoting/elecciones/
 
 src/main/resources/
 └── db/migration/
-    └── V3__crear_tabla_miembro_partido.sql
+    └── V2__crear_tabla_miembro_partido.sql
 
 src/test/java/com/safevoting/elecciones/
 ├── unit/
@@ -203,7 +203,7 @@ src/test/java/com/safevoting/elecciones/
 
 **⚠️ CRITICAL**: Ningún user story de miembros puede comenzar antes de esta fase. Requiere que el plan 001 (partidos) esté completo.
 
-- [ ] T001 Crear migración Flyway `V3__crear_tabla_miembro_partido.sql`:
+- [ ] T001 Crear migración Flyway `V2__crear_tabla_miembro_partido.sql`:
     - Tabla `miembro_partido`:
         - `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`
         - `usuario_id UUID NOT NULL`
@@ -219,7 +219,7 @@ src/test/java/com/safevoting/elecciones/
         - `updated_at TIMESTAMP NOT NULL DEFAULT NOW()`
     - `CONSTRAINT chk_estado_miembro CHECK (estado IN ('ACTIVO','INACTIVO'))`
     - `CONSTRAINT uq_miembro_usuario_partido UNIQUE (usuario_id, partido_id)`
-- [ ] T002 Crear migración Flyway `V4__crear_tabla_event_log.sql`:
+- [ ] T002 Crear migración Flyway `V3__crear_tabla_event_log.sql`:
     - Tabla `event_log` para idempotencia:
         - `event_id VARCHAR(100) PRIMARY KEY`
         - `processed_at TIMESTAMP NOT NULL DEFAULT NOW()`

@@ -1,6 +1,7 @@
 package com.safevoting.elecciones.domain.model.participacion;
 
 import com.safevoting.elecciones.domain.exception.DatosInvalidosException;
+import com.safevoting.elecciones.domain.exception.participacion.ParticipacionYaAnuladaException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +31,11 @@ public class Participacion {
 
     public boolean isAnulado(){
         return EstadoParticipacion.ANULADO.equals(this.estado);
+    }
+
+    public void anular(){
+        if (isAnulado()) throw new ParticipacionYaAnuladaException("Este voto ya fue anulado.");
+        this.estado = EstadoParticipacion.ANULADO;
     }
 
     public void validateInfo() {

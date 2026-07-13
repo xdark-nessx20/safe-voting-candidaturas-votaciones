@@ -25,6 +25,8 @@ public class SecurityConfig {
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .pathMatchers(HttpMethod.PATCH, "/api/v1/votaciones/*/completar").hasRole("SERVICE_AUDITORIA")
+                        .pathMatchers("/api/v1/votaciones/**").hasRole("GESTOR_ELECTORAL")
                         .pathMatchers(HttpMethod.POST, "/api/v1/partidos/**").hasAnyRole("ADMIN", "GESTOR_CANDIDATURAS")
                         .pathMatchers(HttpMethod.GET, "/api/v1/partidos/**").hasAnyRole("ADMIN", "GESTOR_CANDIDATURAS")
                         .pathMatchers(HttpMethod.PUT, "/api/v1/partidos/**").hasAnyRole("ADMIN", "GESTOR_CANDIDATURAS")

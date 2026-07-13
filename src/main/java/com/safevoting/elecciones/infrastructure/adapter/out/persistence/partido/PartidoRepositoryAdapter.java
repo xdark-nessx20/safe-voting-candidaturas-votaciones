@@ -14,42 +14,34 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PartidoRepositoryAdapter implements PartidoPoliticoRepository {
 
-    private final PartidoReactiveRepository reactiveRepository;
+    private final PartidoReactiveRepository repository;
     private final DatabaseClient databaseClient;
     private final PartidoPersistenceMapper mapper;
 
     @Override
     public Mono<PartidoPolitico> save(PartidoPolitico partido) {
-        PartidoEntity entity = mapper.toEntity(partido);
-        return reactiveRepository.save(entity)
-                .map(mapper::toDomain);
+        return repository.save(mapper.toEntity(partido)).map(mapper::toDomain);
     }
 
     @Override
     public Mono<PartidoPolitico> findById(UUID id) {
-        return reactiveRepository.findById(id)
-                .map(mapper::toDomain);
+        return repository.findById(id).map(mapper::toDomain);
     }
 
     @Override
     public Flux<PartidoPolitico> findAll() {
-        return reactiveRepository.findAll()
-                .map(mapper::toDomain);
+        return repository.findAll().map(mapper::toDomain);
     }
 
     @Override
     public Mono<Boolean> existsByNombre(String nombre) {
-        return databaseClient.sql("SELECT EXISTS(SELECT 1 FROM partido WHERE UPPER(nombre) = UPPER(:nombre))")
-                .bind("nombre", nombre)
-                .mapValue(Boolean.class)
-                .one()
-                .defaultIfEmpty(false);
+        return repository.existsByNombre(nombre);
     }
 
     @Override
     public Mono<PartidoPolitico> update(PartidoPolitico partido) {
         var spec = databaseClient.sql("""
-                        UPDATE partido
+                        UPDATE partidos
                         SET nombre = :nombre,
                             descripcion = :descripcion,
                             logo_url = :logoUrl,
@@ -73,7 +65,6 @@ public class PartidoRepositoryAdapter implements PartidoPoliticoRepository {
             spec = spec.bindNull("logoUrl", String.class);
         }
 
-        return spec.then()
-                .thenReturn(partido);
+        return spec.then().thenReturn(partido);
     }
 }

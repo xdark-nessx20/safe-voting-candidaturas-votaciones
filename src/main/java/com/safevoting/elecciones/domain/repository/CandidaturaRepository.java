@@ -29,4 +29,6 @@ public interface CandidaturaRepository {
     Mono<Votacion> findVotacionByCandidaturaId(UUID candidaturaId);
 
     Flux<TarjetonItem> findTarjetonByVotacionId(UUID votacionId);
+
+    Mono<Candidatura> findByVotacionIdAndCandidaturaId(UUID votacionId, UUID candidaturaId);
 }

@@ -31,7 +31,7 @@ public class JwtFilter implements WebFilter {
         if (authHeader != null && authHeader.startsWith(BEARER_PREFIX)) {
             String token = authHeader.substring(BEARER_PREFIX.length());
             if (jwtProvider.validateToken(token)) {
-                String username = jwtProvider.getUsernameFromToken(token);
+                String uid = jwtProvider.getUidFromToken(token);
                 List<String> roles = jwtProvider.getRolesFromToken(token);
 
                 List<SimpleGrantedAuthority> authorities = roles.stream()
@@ -39,7 +39,7 @@ public class JwtFilter implements WebFilter {
                         .collect(Collectors.toList());
 
                 UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(username, null, authorities);
+                        new UsernamePasswordAuthenticationToken(uid, null, authorities);
 
                 return chain.filter(exchange)
                         .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));

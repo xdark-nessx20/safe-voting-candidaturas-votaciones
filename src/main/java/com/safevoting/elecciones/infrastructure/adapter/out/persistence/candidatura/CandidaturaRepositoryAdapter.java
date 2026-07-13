@@ -125,4 +125,11 @@ public class CandidaturaRepositoryAdapter implements CandidaturaRepository {
                 ))
                 .all();
     }
+
+    @Override
+    public Mono<Candidatura> findByVotacionIdAndCandidaturaId(UUID votacionId, UUID candidaturaId) {
+        return repository.findById(candidaturaId)
+                .filter(e -> e.getVotacionId().equals(votacionId))
+                .map(mapper::toDomain);
+    }
 }

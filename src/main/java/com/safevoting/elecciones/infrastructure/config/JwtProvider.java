@@ -36,6 +36,12 @@ public class JwtProvider {
         return getClaims(token).getSubject();
     }
 
+    public String getUidFromToken(String token) {
+        Claims claims = getClaims(token);
+        String uid = claims.get("uid", String.class);
+        return uid != null ? uid : claims.getSubject();
+    }
+
     @SuppressWarnings("unchecked")
     public List<String> getRolesFromToken(String token) {
         return getClaims(token).get("roles", List.class);
@@ -49,10 +55,11 @@ public class JwtProvider {
                 .getPayload();
     }
 
-    public String generateToken(String username, List<String> roles) {
+    public String generateToken(String username, List<String> roles, String uid) {
         return Jwts.builder()
                 .subject(username)
                 .claim("roles", roles)
+                .claim("uid", uid)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key)

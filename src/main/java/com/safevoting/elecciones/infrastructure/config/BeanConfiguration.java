@@ -25,13 +25,17 @@ import com.safevoting.elecciones.application.votacion.CrearVotacionUseCase;
 import com.safevoting.elecciones.application.votacion.EstablecerFechasUseCase;
 import com.safevoting.elecciones.application.votacion.ListarVotacionesUseCase;
 import com.safevoting.elecciones.application.votacion.ObtenerVotacionUseCase;
+import com.safevoting.elecciones.application.voto.ConsultarHistorialUseCase;
+import com.safevoting.elecciones.application.voto.EmitirVotoUseCase;
 import com.safevoting.elecciones.domain.repository.CandidaturaRepository;
 import com.safevoting.elecciones.domain.repository.EventLogRepository;
 import com.safevoting.elecciones.domain.repository.ImageStorageService;
 import com.safevoting.elecciones.domain.repository.MiembroPartidoRepository;
 import com.safevoting.elecciones.domain.repository.MiembroPartidoRepository;
+import com.safevoting.elecciones.domain.repository.ParticipacionRepository;
 import com.safevoting.elecciones.domain.repository.PartidoPoliticoRepository;
 import com.safevoting.elecciones.domain.repository.VotacionRepository;
+import com.safevoting.elecciones.domain.repository.VotoRepository;
 import com.safevoting.elecciones.domain.repository.VotacionRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -175,5 +179,19 @@ public class BeanConfiguration {
     @Bean
     public CancelarCandidaturasPorPartidoUseCase cancelarCandidaturasPorPartidoUseCase(CandidaturaRepository candidaturaRepository) {
         return new CancelarCandidaturasPorPartidoUseCase(candidaturaRepository);
+    }
+
+    @Bean
+    public EmitirVotoUseCase emitirVotoUseCase(VotoRepository votoRepository,
+                                                 ParticipacionRepository participacionRepository,
+                                                 VotacionRepository votacionRepository,
+                                                 CandidaturaRepository candidaturaRepository) {
+        return new EmitirVotoUseCase(votoRepository, participacionRepository, votacionRepository, candidaturaRepository);
+    }
+
+    @Bean
+    public ConsultarHistorialUseCase consultarHistorialUseCase(ParticipacionRepository participacionRepository,
+                                                                  VotacionRepository votacionRepository) {
+        return new ConsultarHistorialUseCase(participacionRepository, votacionRepository);
     }
 }

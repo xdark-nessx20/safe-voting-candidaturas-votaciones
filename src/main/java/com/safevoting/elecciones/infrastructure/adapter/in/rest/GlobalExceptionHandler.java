@@ -6,6 +6,10 @@ import com.safevoting.elecciones.domain.exception.candidatura.MiembroNoActivoExc
 import com.safevoting.elecciones.domain.exception.candidatura.PartidoInhabilitadoException;
 import com.safevoting.elecciones.domain.exception.candidatura.PartidoNoCoincideException;
 import com.safevoting.elecciones.domain.exception.candidatura.VotacionNoActivaException;
+import com.safevoting.elecciones.domain.exception.participacion.CandidaturaNoActivaException;
+import com.safevoting.elecciones.domain.exception.participacion.UsuarioNoHabilitadoException;
+import com.safevoting.elecciones.domain.exception.participacion.UsuarioYaVotoException;
+import com.safevoting.elecciones.domain.exception.voto.VotacionNoEnProgresoException;
 import com.safevoting.elecciones.domain.exception.DatosInvalidosException;
 import com.safevoting.elecciones.domain.exception.miembro.MiembroDuplicadoException;
 import com.safevoting.elecciones.domain.exception.miembro.MiembroInscritoEnVotacionException;
@@ -172,6 +176,30 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PartidoNoCoincideException.class)
     public ResponseEntity<ApiErrorResponse> handlePartidoNoCoincide(PartidoNoCoincideException ex) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(VotacionNoEnProgresoException.class)
+    public ResponseEntity<ApiErrorResponse> handleVotacionNoEnProgreso(VotacionNoEnProgresoException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(UsuarioYaVotoException.class)
+    public ResponseEntity<ApiErrorResponse> handleUsuarioYaVoto(UsuarioYaVotoException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(UsuarioNoHabilitadoException.class)
+    public ResponseEntity<ApiErrorResponse> handleUsuarioNoHabilitado(UsuarioNoHabilitadoException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(CandidaturaNoActivaException.class)
+    public ResponseEntity<ApiErrorResponse> handleCandidaturaNoActiva(CandidaturaNoActivaException ex) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .body(ApiErrorResponse.of(ex.getErrorCode(), ex.getMessage()));
     }

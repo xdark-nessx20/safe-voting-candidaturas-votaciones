@@ -26,6 +26,8 @@ public class SecurityConfig {
                         .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .pathMatchers(HttpMethod.PATCH, "/api/v1/votaciones/*/completar").hasRole("SERVICE_AUDITORIA")
+                        .pathMatchers(HttpMethod.GET, "/api/v1/votaciones/*/tarjeton").authenticated()
+                        .pathMatchers("/api/v1/candidaturas/**").hasRole("GESTOR_ELECTORAL")
                         .pathMatchers("/api/v1/votaciones/**").hasRole("GESTOR_ELECTORAL")
                         .pathMatchers(HttpMethod.POST, "/api/v1/partidos/**").hasAnyRole("ADMIN", "GESTOR_CANDIDATURAS")
                         .pathMatchers(HttpMethod.GET, "/api/v1/partidos/**").hasAnyRole("ADMIN", "GESTOR_CANDIDATURAS")

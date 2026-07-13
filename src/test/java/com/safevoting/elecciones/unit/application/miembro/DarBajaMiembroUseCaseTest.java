@@ -111,7 +111,7 @@ class DarBajaMiembroUseCaseTest {
         UUID candidaturaId = UUID.randomUUID();
         Candidatura candidatura = Candidatura.builder()
                 .id(candidaturaId)
-                .candidatoId(miembroId)
+                .miembroPartidoId(miembroId)
                 .partidoId(UUID.randomUUID())
                 .votacionId(UUID.randomUUID())
                 .build();
